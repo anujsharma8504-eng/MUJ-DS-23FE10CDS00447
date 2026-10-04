@@ -14,7 +14,7 @@ from src.utils import extract_text_from_pdf
 # ------------------------------------------------------------------
 # Config
 # ------------------------------------------------------------------
-with open as f:
+with open("config/config.yaml", "r", encoding="utf-8") as f:
     APP_CONFIG = yaml.safe_load(f)
 
 

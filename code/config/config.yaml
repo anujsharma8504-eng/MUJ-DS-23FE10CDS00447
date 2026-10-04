@@ -14,11 +14,12 @@ app:
 llm:
   provider: "openrouter"
   base_url: "https://openrouter.ai/api/v1"
-  model: "openrouter/free"
-  fallback_models: []
+  model: "openrouter/free"       # ← changed to router
+  fallback_models: []             # router handles fallbacks
   temperature: 0.3
   max_tokens: 1500
   timeout_seconds: 60
+  json_mode: true
 
 paths:
   prompts_file: "prompts/prompts.yaml"

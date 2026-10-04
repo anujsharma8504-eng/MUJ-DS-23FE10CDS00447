@@ -53,15 +53,21 @@ class LLMClient:
     def _try_model(self, model: str, system_prompt: str, user_prompt: str) -> Optional[str]:
         """Attempt a single completion call with one model."""
         try:
-            response = self.client.chat.completions.create(
-                model=model,
-                messages=[
+            kwargs = {
+                "model": model,
+                "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt},
                 ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+                "temperature": self.temperature,
+                "max_tokens": self.max_tokens,
+            }
+
+            # Enable JSON mode if configured (OpenAI-compatible)
+            if self.config["llm"].get("json_mode", False):
+                kwargs["response_format"] = {"type": "json_object"}
+
+            response = self.client.chat.completions.create(**kwargs)
             content = response.choices[0].message.content
             return content.strip() if content else None
         except Exception as e:

@@ -41,12 +41,9 @@ class ResumeAnalyzer:
         raw = raw.strip()
 
         if self.strip_fences:
-            # Strip ```json ... ``` or ``` ... ```
             raw = re.sub(r"^```(?:json)?\s*", "", raw)
             raw = re.sub(r"\s*```$", "", raw)
 
-        # Sometimes models prefix with "Here is the JSON:" — keep only
-        # the substring from the first { to the last }
         first_brace = raw.find("{")
         last_brace = raw.rfind("}")
         if first_brace != -1 and last_brace != -1 and last_brace > first_brace:

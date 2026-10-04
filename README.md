@@ -1,42 +1,66 @@
-# 📄 AI Resume Analyzer
+# AI Resume Analyzer
 
-An NLP project that uses a Large Language Model (LLM) via API calls to analyze a resume against a job description, producing structured feedback: a match score, missing skills, strengths, and improvement suggestions.
-
-Built as an individual NLP course project.
-
----
-
-## 🎯 Features
-
-- **PDF resume parsing** — upload a PDF or paste resume text directly
-- **LLM-powered analysis** via OpenRouter's OpenAI-compatible API
-- **Structured JSON output** — match score, verdict, matching/missing skills, strengths, improvements, summary
-- **Configurable** — model, temperature, and prompt templates live in YAML files, not hardcoded
-- **Robust** — automatic model fallbacks and retries on rate limits or transient errors
-- **Prompt engineering** — role-based system prompt + few-shot example for consistent output
+**Name:** Anuj Sharma
+**Registration Number:** 23FE10CDS00447
+**Branch:** B.Tech Computer Science (Data Science)
+**Batch:** Batch F
+**GitHub Username:** [anujsharma8504-eng](https://github.com/anujsharma8504-eng)
+**Training Program:** NLP Capstone Project — Batch F
 
 ---
 
-## 🏗️ Project Structure
+## 📌 Project Title
+
+**AI Resume Analyzer** — An NLP application that uses a Large Language Model (LLM) via API calls to analyze a resume against a job description and return structured feedback.
+
+---
+
+## 🎯 Overview
+
+The tool accepts a job description and a resume (PDF upload or pasted text), sends both to an LLM via an API call, and returns structured, actionable feedback in JSON:
+
+- Match score (0–100)
+- Verdict (Strong / Moderate / Weak Match)
+- Matching skills
+- Missing skills
+- Strengths
+- Actionable improvements
+- Plain-English summary
+
+The LLM is guided by a role-based system prompt and a few-shot example to reliably produce JSON matching a strict schema.
+
+---
+
+## 🏗️ Repository Structure
 
 ```
-resume-analyzer/
-├── app.py                      # Streamlit UI (entry point)
-├── config/
-│   └── config.yaml             # LLM + app settings
-├── prompts/
-│   └── prompts.yaml            # All prompt templates (externalized)
-├── src/
-│   ├── __init__.py
-│   ├── llm_client.py           # LLM API wrapper with fallbacks
-│   ├── analyzer.py             # Core analysis + JSON parsing
-│   └── utils.py                # PDF text extraction
-├── tests/
-│   └── test_analyzer.py        # Unit tests (offline)
-├── .env.example                # Template for API key
+MUJ-DS-23FE10CDS00447/
+├── README.md                    ← this file
+├── .env.example                 ← API key template
 ├── .gitignore
-├── requirements.txt
-└── README.md
+│
+├── code/                        ← project source code
+│   ├── app.py                   ← Streamlit UI
+│   ├── config/
+│   │   └── config.yaml          ← LLM + app settings
+│   ├── prompts/
+│   │   └── prompts.yaml         ← all prompt templates
+│   ├── src/
+│   │   ├── llm_client.py        ← LLM API wrapper with fallbacks
+│   │   ├── analyzer.py          ← core analysis logic
+│   │   └── utils.py             ← PDF text extraction
+│   ├── tests/
+│   │   └── test_analyzer.py     ← unit tests (offline)
+│   ├── test_api.py              ← quick API test script
+│   └── requirements.txt
+│
+├── capstone/                    ← capstone docs
+│   └── README.md
+│
+├── assignments/                 ← training assignments
+├── notebooks/                   ← Jupyter notebooks
+├── resources/                   ← reference material
+└── presentations/               ← project presentation
 ```
 
 ---
@@ -45,14 +69,14 @@ resume-analyzer/
 
 ### 1. Clone the repository
 
-```
-git clone <your-repo-url>
-cd resume-analyzer
+```bash
+git clone https://github.com/anujsharma8504-eng/MUJ-DS-23FE10CDS00447.git
+cd MUJ-DS-23FE10CDS00447
 ```
 
-### 2. Create and activate a virtual environment
+### 2. Create a virtual environment
 
-```
+```bash
 python -m venv venv
 venv\Scripts\activate          # Windows
 # source venv/bin/activate     # macOS / Linux
@@ -60,71 +84,72 @@ venv\Scripts\activate          # Windows
 
 ### 3. Install dependencies
 
-```
+```bash
+cd code
 pip install -r requirements.txt
 ```
 
-### 4. Configure your API key
+### 4. Add your API key
 
-Copy `.env.example` to `.env`:
-
-```
-copy .env.example .env
-```
-
-Then edit `.env` and add your OpenRouter API key:
+Copy `.env.example` to `.env` inside `code/` and add your OpenRouter key:
 
 ```
 OPENROUTER_API_KEY=sk-or-v1-your_key_here
 ```
 
-Get a free key at https://openrouter.ai/keys
+Get a free key at **https://openrouter.ai/keys**
 
 ### 5. Run the app
 
-```
+```bash
 streamlit run app.py
 ```
 
-Open http://localhost:8501 in your browser.
-
----
-
-## 🔧 Configuration
-
-All tunable settings are in `config/config.yaml`:
-
-- **Provider** (OpenRouter)
-- **Model** name
-- **Fallback models**
-- **Temperature** (0.3 for consistency)
-- **Max tokens**
-
-All LLM prompts are in `prompts/prompts.yaml` — including the role-based system prompt, the user template with a strict JSON schema, and a few-shot example.
-
-This separation means prompts and settings can be changed without editing any Python code.
+Open **http://localhost:8501** in your browser.
 
 ---
 
 ## 🧠 How the LLM Is Used
 
-1. The user provides a job description and a resume (PDF upload or pasted text)
+1. User provides a job description and a resume (PDF or pasted text)
 2. `analyzer.py` loads the prompt template from `prompts/prompts.yaml`
-3. The template is filled with the resume text and job description (truncated to safe limits)
-4. `llm_client.py` sends the prompt to OpenRouter's chat completions endpoint
+3. The template is filled with the resume text and job description
+4. `llm_client.py` sends the request to OpenRouter's OpenAI-compatible API
 5. The LLM returns structured JSON matching the enforced schema
-6. `analyzer.py` cleans and parses the JSON (strips markdown fences, extracts `{...}` if needed)
-7. The Streamlit UI renders the results: score card, verdict, skill lists, strengths, improvements, and a raw JSON view
+6. `analyzer.py` cleans and parses the JSON
+7. The Streamlit UI renders the results
+
+**Key features of the LLM integration:**
+- Role-based system prompt for persona grounding
+- Strict JSON schema enforced in the user prompt
+- Few-shot example to teach output format
+- Automatic fallback across multiple models
+- Retry logic on transient errors (503, rate limits)
+
+---
+
+## ⚙️ Configuration
+
+All tunable settings are in **`code/config/config.yaml`**:
+
+- LLM provider and model
+- Fallback models
+- Temperature (0.3)
+- Max tokens
+- App limits (max resume/job chars)
+
+All prompts are in **`code/prompts/prompts.yaml`** — no code changes needed to tune prompts.
 
 ---
 
 ## 🧪 Tests
 
-```
+```bash
+cd code
 pytest tests/ -v
 ```
 
-The tests cover pure logic (JSON cleaning, truncation, input validation) and do not require an API key.
+Tests cover pure logic (JSON cleaning, truncation, input validation) and run offline.
 
 ---
 
@@ -134,8 +159,8 @@ The tests cover pure logic (JSON cleaning, truncation, input validation) and do 
 |---|---|
 | Python 3.10+ | Language |
 | Streamlit | Web UI |
-| OpenAI Python SDK | Chat completions (OpenRouter is OpenAI-compatible) |
-| PyYAML | Config + prompt file parsing |
+| OpenAI Python SDK | Chat completions via OpenRouter |
+| PyYAML | Config + prompt files |
 | pypdf | PDF text extraction |
 | python-dotenv | API key management |
 | pytest | Testing |
@@ -144,11 +169,11 @@ The tests cover pure logic (JSON cleaning, truncation, input validation) and do 
 
 ## 📝 Prompt Engineering Notes
 
-- **Role-based system prompt** ("expert technical recruiter") grounds the LLM in a specific persona, improving output relevance
-- **Strict JSON schema** enforced in the user prompt for reliable parsing
-- **Few-shot example** teaches the model the exact output format expected
-- **Low temperature** (0.3) reduces variability
-- **Rules section** explicitly forbids invented experience and markdown fences
+- **Role-based system prompt** — "expert technical recruiter" grounds the LLM in a persona
+- **Strict JSON schema** enforced for reliable parsing
+- **Few-shot example** locks in the output format
+- **Low temperature (0.3)** reduces variability
+- **Explicit rules** forbid inventing experience and markdown fences
 
 ---
 

@@ -1,0 +1,82 @@
+# ============================================================
+# Prompt Templates
+# ============================================================
+# All LLM prompts live here so they can be tuned without touching
+# Python code. Placeholders in {curly_braces} are filled at runtime.
+#
+# Prompt engineering notes:
+#   - Role-based system prompt ("expert technical recruiter") grounds
+#     the LLM in a specific persona for more relevant output.
+#   - A few-shot example is included to lock in the response format.
+#   - Strict JSON schema is enforced so the UI can render results
+#     without fragile parsing.
+#   - Temperature is kept low (0.3) in config.yaml for consistency.
+# ============================================================
+
+resume_analysis:
+
+  system: |
+    You are an expert technical recruiter with 10+ years of experience
+    hiring for software engineering and data roles. You analyze resumes
+    against job descriptions objectively and honestly.
+
+    You always return your analysis as valid JSON matching the exact
+    schema requested by the user. You never include markdown fences,
+    preamble, or explanation outside the JSON.
+
+  user: |
+    Analyze the following resume against the job description.
+
+    === JOB DESCRIPTION ===
+    {job_description}
+    === END JOB DESCRIPTION ===
+
+    === RESUME ===
+    {resume_text}
+    === END RESUME ===
+
+    Return ONLY valid JSON with this exact schema:
+
+    {{
+      "match_score": <integer between 0 and 100>,
+      "verdict": "<one of: Strong Match | Moderate Match | Weak Match>",
+      "matching_skills": ["<skill 1>", "<skill 2>"],
+      "missing_skills": ["<skill 1>", "<skill 2>"],
+      "strengths": ["<strength 1>", "<strength 2>"],
+      "improvements": ["<actionable improvement 1>", "<actionable improvement 2>"],
+      "summary": "<2-3 sentence plain-English overview>"
+    }}
+
+    Rules:
+    - match_score must be an integer (not a string).
+    - verdict must be exactly one of the three allowed strings.
+    - Lists should contain 3-6 items each. Be specific, not generic.
+    - Do not invent experience that is not present in the resume.
+    - Do not wrap the JSON in markdown code fences.
+
+  # A few-shot example that teaches the model the expected behavior.
+  # This is included in the system prompt at runtime to improve
+  # consistency across different resumes.
+  few_shot_example: |
+    Example input:
+      Job Description: "Looking for a Python developer with Django, REST APIs, and AWS experience."
+      Resume: "3 years Python, built REST APIs with Flask, deployed on AWS EC2, no Django."
+
+    Example output:
+    {{
+      "match_score": 62,
+      "verdict": "Moderate Match",
+      "matching_skills": ["Python", "REST APIs", "AWS"],
+      "missing_skills": ["Django"],
+      "strengths": [
+        "3 years of production Python experience",
+        "Demonstrated REST API development",
+        "Hands-on AWS deployment experience"
+      ],
+      "improvements": [
+        "Learn Django or highlight transferable Flask experience",
+        "Add a project demonstrating Django REST Framework",
+        "Quantify impact of AWS work (uptime, cost savings)"
+      ],
+      "summary": "Solid Python and API background with AWS exposure, but the resume lacks Django which is explicitly required. A short Django side-project would close the gap."
+    }}

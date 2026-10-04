@@ -1,0 +1,28 @@
+# ============================================================
+# Application Configuration
+# ============================================================
+# All tunable settings live here. Change values without editing
+# any Python code.
+# ============================================================
+
+app:
+  title: "AI Resume Analyzer"
+  description: "Analyze a resume against a job description using an LLM."
+  max_resume_chars: 8000        # Truncate resumes longer than this
+  max_job_chars: 4000           # Truncate job descriptions
+
+llm:
+  provider: "openrouter"
+  base_url: "https://openrouter.ai/api/v1"
+  model: "openrouter/free"
+  fallback_models: []
+  temperature: 0.3
+  max_tokens: 1500
+  timeout_seconds: 60
+
+paths:
+  prompts_file: "prompts/prompts.yaml"
+
+output:
+  strict_json: true
+  strip_markdown_fences: true

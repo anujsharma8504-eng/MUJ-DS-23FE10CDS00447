@@ -14,6 +14,12 @@
 **AI Resume Analyzer** — An NLP application that uses a Large Language Model (LLM) via API calls to analyze a resume against a job description and return structured feedback.
 
 ---
+## 📸 Demo
+
+![AI Resume Analyzer Demo](resources/demo.png)
+
+---
+
 
 ## 🎯 Overview
 

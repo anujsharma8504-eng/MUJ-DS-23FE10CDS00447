@@ -17,7 +17,7 @@ llm:
   model: "openrouter/free"       # ← changed to router
   fallback_models: []             # router handles fallbacks
   temperature: 0.3
-  max_tokens: 1500
+  max_tokens: 3000
   timeout_seconds: 60
   json_mode: true
 
